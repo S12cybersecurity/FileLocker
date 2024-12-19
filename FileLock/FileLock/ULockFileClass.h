@@ -82,14 +82,14 @@ public:
     }
 
     // Mark file as System file with FILE_ATTRIBUTE_SYSTEM
-    bool MarkFileAsSystem(const string& filePath) {
+    bool MarkFileAsSystemHidden(const string& filePath) {
         DWORD attributes = GetFileAttributesA(filePath.c_str());
         if (attributes == INVALID_FILE_ATTRIBUTES) {
             cerr << "Failed to get file attributes." << endl;
             return false;
         }
 
-        if (!SetFileAttributesA(filePath.c_str(), attributes | FILE_ATTRIBUTE_SYSTEM)) {
+        if (!SetFileAttributesA(filePath.c_str(), attributes | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN)) {
             cerr << "Failed to set file as system." << endl;
             return false;
         }
@@ -97,53 +97,70 @@ public:
         return true;
     }
 
-    // Lock file with LockFileEx
-    bool LockFile(const string& filePath) {
-        HANDLE hFile = CreateFileA(
-            filePath.c_str(),
-            GENERIC_READ | GENERIC_WRITE,
-            0,
-            NULL,
-            OPEN_EXISTING,
-            FILE_ATTRIBUTE_NORMAL,
-            NULL
-        );
+ //   // Lock file with LockFileEx, Only lock the locker process
+ //   bool LockFile(const string& filePath) {
+ //       HANDLE hFile = CreateFileA(
+ //           filePath.c_str(),
+ //           GENERIC_READ | GENERIC_WRITE,
+ //           0,
+ //           NULL,
+ //           OPEN_EXISTING,
+ //           FILE_ATTRIBUTE_NORMAL,
+ //           NULL
+ //       );
 
-        if (hFile == INVALID_HANDLE_VALUE) {
-            cerr << "Failed to open file for locking." << endl;
-            return false;
-        }
+ //       if (hFile == INVALID_HANDLE_VALUE) {
+ //           cerr << "Failed to open file for locking." << endl;
+ //           return false;
+ //       }
 
-        OVERLAPPED overlapped = {};
-        if (!LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, MAXDWORD, &overlapped)) {
-            cerr << "Failed to lock file." << endl;
-            CloseHandle(hFile);
-            return false;
-        }
+ //       OVERLAPPED overlapped = {};
+ //       if (!LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, MAXDWORD, &overlapped)) {
+ //           cerr << "Failed to lock file." << endl;
+ //           CloseHandle(hFile);
+ //           return false;
+ //       }
 
-        cout << "File locked successfully." << endl;
-        // Keep the file locked as long as needed
+ //       cout << "File locked successfully." << endl;
+ //       // Keep the file locked as long as needed
 
-        // Unlock the file and close handle (Optional in real-world usage)
-        UnlockFileEx(hFile, 0, MAXDWORD, MAXDWORD, &overlapped);
-        CloseHandle(hFile);
+ //       // Unlock the file and close handle (Optional in real-world usage)
+ //       //UnlockFileEx(hFile, 0, MAXDWORD, MAXDWORD, &overlapped);
+ //       CloseHandle(hFile);
 
-        return true;
-    }
+ //       return true;
+ //   }
 
-    // Change file attributes to FILE_ATTRIBUTE_HIDDEN
-    bool HideFile(const string& filePath) {
-        DWORD attributes = GetFileAttributesA(filePath.c_str());
-        if (attributes == INVALID_FILE_ATTRIBUTES) {
-            cerr << "Failed to get file attributes." << endl;
-            return false;
-        }
+ //   bool UnlockFile(const string& filePath) {
+	//	HANDLE hFile = CreateFileA(
+	//		filePath.c_str(),
+	//		GENERIC_READ | GENERIC_WRITE,
+	//		0,
+	//		NULL,
+	//		OPEN_EXISTING,
+	//		FILE_ATTRIBUTE_NORMAL,
+	//		NULL
+	//	);
 
-        if (!SetFileAttributesA(filePath.c_str(), attributes | FILE_ATTRIBUTE_HIDDEN)) {
-            cerr << "Failed to hide file." << endl;
-            return false;
-        }
+	//	if (hFile == INVALID_HANDLE_VALUE) {
+	//		cerr << "Failed to open file for unlocking." << endl;
+	//		return false;
+	//	}
 
-        return true;
-    }
+	//	OVERLAPPED overlapped = {};
+	//	if (!UnlockFileEx(hFile, 0, MAXDWORD, MAXDWORD, &overlapped)) {
+	//		cerr << "Failed to unlock file." << endl;
+	//		CloseHandle(hFile);
+	//		return false;
+	//	}
+
+	//	cout << "File unlocked successfully." << endl;
+
+	//	CloseHandle(hFile);
+	//	return true;
+	//}
+    
+
+
 };
+
